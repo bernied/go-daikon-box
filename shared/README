@@ -8,12 +8,12 @@ go-daikon-box is a vagrant box that includes all you need to run daikon (the dyn
 
 In order to finialize the initialization you must run the 'setup-all' script located in the /home/vagrant directory. It will finish the setup by downloading, building and installing daikon, txl and influxdb onto the virtual machine. Run the script and when the txl download appears, hit 'y' to agree to the terms of txl.
 
-Once everything is downlaoded and installed you should exit your shell and 'vagrant ssh' back into the box (or source .bashrc). This will reset the shell environment and make everything is ready to go.
+Once everything is downloaded and installed you should exit your shell and 'vagrant ssh' back into the box (or source .bashrc). This will reset the shell environment and make sure everything is ready to go.
 
 Running Daikon against java
 ---------------------------
 
-$ cd '~/daikon/examples/java-examples/StackAr'
+$ cd "~/daikon/examples/java-examples/StackAr"
 $ javac -g DataStructures/*.java
 $ java -cp "../../../daikon.jar:." daikon.Chicory --daikon DataStructures.StackArTester
 
@@ -28,3 +28,4 @@ Running daikon against instrumented go code
 -------------------------------------------
 
 TBA
+
