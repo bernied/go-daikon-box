@@ -1,0 +1,5 @@
+txl.tar.gz
+daikon.tar.gz
+.vagrant/
+.DS_Store
+*.swp

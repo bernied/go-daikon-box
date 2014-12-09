@@ -1,0 +1,47 @@
+#!/bin/bash
+
+TEST=0
+echo "### Setup: daikon"
+
+# get params
+while [ $# != 0 ]
+do
+    case "$1" in
+        -t|--test) shift; TEST=1;;
+        *) echo "setup-daikon: Unsupported parameter $1";;
+    esac
+    shift;
+done;
+
+# setup exports
+export DAIKONDIR="$HOME/daikon"
+#export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+
+# install daikon into $HOME directory
+curl -sS http://plse.cs.washington.edu/daikon/download/daikon.tar.gz -o /shared/daikon.tar.gz
+tar xfz /shared/daikon.tar.gz -C "$HOME"
+
+# adjust .bashrc
+daikon_src='[[ -s "$DAIKONDIR/scripts/daikon.bashrc" ]] && source "$DAIKONDIR/scripts/daikon.bashrc"'
+fgrep -q "$daikon_src" "$HOME/.bashrc"
+if [ $? -ne 0 ]; then
+  echo "# daikon initialization" >> "$HOME/.bashrc"
+  echo 'export DAIKONDIR="$HOME/daikon"' >> "$HOME/.bashrc"
+  echo "export JAVA_HOME=\"$JAVA_HOME\"" >> "$HOME/.bashrc"
+  echo "$daikon_src" >> "$HOME/.bashrc"
+fi
+
+# build daikon invariant tool
+source "$DAIKONDIR/scripts/daikon.bashrc"
+cd "$DAIKONDIR/java"
+make
+
+# run a test build to make sure it works
+# test influxdb
+if [ $TEST -eq 1 ]; then
+  echo "Testing daikon..."
+  cd $DAIKONDIR/examples/java-examples/StackAr
+  javac -g DataStructures/*.java
+  java -cp "../../../daikon.jar:." daikon.Chicory --daikon DataStructures.StackArTester
+fi

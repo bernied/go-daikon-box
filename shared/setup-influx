@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# source go
+source "$HOME/.gvm/scripts/gvm"
+
+# get influxdb code
+INFLUXDB="$GOPATH/src/github.com/influxdb"
+export GOPATH="$HOME/gocode"
+mkdir -p "$INFLUXDB"
+cd "$INFLUXDB"
+git clone git@github.com:influxdb/influxdb
+
+# build influxdb
+go get -u ./...
+go build ./...
+
+# test influxdb
+cd "$INFLUXDB/influxdb"
+go test -v ./...

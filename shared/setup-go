@@ -1,0 +1,22 @@
+#!/bin/bash
+
+echo "### Setup: golang"
+
+# download gvm to manage version of golang
+bash < <(curl -sS -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+
+# install go v1.3
+echo "# golang initialization" >> "$HOME/.bashrc"
+source "$HOME/.gvm/scripts/gvm"
+gvm install go1.3
+gvm use go1.3 --default
+
+# create golang home
+mkdir -p "$HOME/gocode"
+
+# adjust .bashrc
+gopath='export GOPATH="$HOME/gocode"'
+fgrep -q "$gopath" "$HOME/.bashrc"
+if [ $? -ne 0 ]; then
+  echo "$gopath" >> "$HOME/.bashrc"
+fi

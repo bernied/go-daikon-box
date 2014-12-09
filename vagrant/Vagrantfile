@@ -1,0 +1,42 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure("2") do |config|
+
+  # All Vagrant configuration is done here. The most common configuration
+  # options are documented and commented below. For a complete reference,
+  # please see the online documentation at vagrantup.com.
+
+  config.vm.box = "hashicorp/precise64"
+  config.vm.box_url = "https://vagrantcloud.com/hashicorp/precise64"
+  config.vm.hostname = "godaikon"
+
+  config.vm.provision :shell, :path => "bootstrap.sh"
+
+  config.vm.provider :virtualbox do |vb|
+
+    vb.customize ["modifyvm", :id,
+                  "--name", "godaikon",
+                  "--memory", "1024",
+                  # Enable DNS behind NAT
+                  "--natdnshostresolver1", "on",
+                  # Enable I/O APIC to allow multi-core
+                  # (http://www.virtualbox.org/manual/ch03.html#settings-processor)
+                  "--ioapic", "on",
+                  "--cpus", "2"]
+  end
+
+  config.vm.synced_folder "../shared", "/shared"
+
+  config.vbguest.auto_update = false
+
+  config.vm.provision :puppet do |puppet|
+    puppet.manifests_path = "manifests"
+    puppet.module_path = "modules"
+    puppet.manifest_file = "base.pp"
+    puppet.options = "--verbose --trace"
+  end
+
+end

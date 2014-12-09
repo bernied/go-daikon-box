@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ -e "$HOME/.setup-all" ]; then
+  echo "Already ran setup-all! To run again, remove file \"$HOME/.setup-all\"."
+  exit
+fi
+
+pushd /shared
+echo "" >> "$HOME/.bashrc"
+./setup-daikon $@
+./setup-go $@
+./setup-influxdb $@
+./setup-txl $@
+popd /shared
+
+echo "Exit your shell or source .bashrc"
+touch "$HOME/.setup-all"

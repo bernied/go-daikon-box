@@ -1,0 +1,36 @@
+#!/bin/bash
+
+TEST=0
+echo "### Setup: influxdb"
+
+# get params
+while [ $# != 0 ]
+do
+    case "$1" in
+        -t|--test) shift; TEST=1;;
+        *) echo "setup-influxdb: Unsupported parameter $1";;
+    esac
+    shift;
+done;
+
+# source go
+source "$HOME/.gvm/scripts/gvm"
+
+# get influxdb code
+LATEST_TAG=v0.8.7
+export GOPATH="$HOME/gocode"
+INFLUXDB="$GOPATH/src/github.com/influxdb"
+mkdir -p "$INFLUXDB"
+cd "$INFLUXDB"
+git clone https://github.com/influxdb/influxdb.git
+
+# build influxdb
+go get -u ./...
+go build ./...
+
+# test influxdb
+if [ $TEST -eq 1 ]; then
+  echo "Testing influxdb..."
+  cd "$INFLUXDB/influxdb"
+  go test -v ./...
+fi
